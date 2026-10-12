@@ -1,15 +1,12 @@
 Sistem Akuntansi Toko BakeLY
 
-**Website: https://rahmaliakusumadewi0-pixel.github.io/Sistem-Akuntansi-Toko-BakeLY/
+[Website: https://rahmaliakusumadewi0-pixel.github.io/Sistem-Akuntansi-Toko-BakeLY/](https://rahmaliakusumadewi0-pixel.github.io/Sistem-Akuntansi-Toko-BakeLY/)
 
 Aplikasi berbasis web untuk membantu pengelolaan penjualan, persediaan bahan baku, produksi, dan pencatatan pemakaian bahan baku pada usaha bakery.
 
 1. Deskripsi Sistem
 
-Sistem Akuntansi Toko BakeLY merupakan aplikasi yang dirancang untuk mendukung pencatatan dan pengelolaan aktivitas operasional usaha bakery secara terstruktur. Sistem ini mencakup pengelolaan bahan baku, barang jadi, pemakaian bahan baku, produksi, dan penjualan.
-
-Dalam usaha bakery, kegiatan produksi membutuhkan bahan baku dengan jenis dan jumlah yang berbeda. Selain itu, jumlah produk yang dihasilkan dan penjualan perlu dicatat agar pemilik usaha dapat memantau persediaan serta aktivitas operasional dengan lebih mudah.
-
+Sistem Akuntansi Toko BakeLY merupakan aplikasi yang dirancang untuk mendukung pencatatan dan pengelolaan aktivitas operasional usaha bakery secara terstruktur. Sistem ini mencakup pengelolaan bahan baku, barang jadi, pemakaian bahan baku, produksi, dan penjualan. Dalam usaha bakery, kegiatan produksi membutuhkan bahan baku dengan jenis dan jumlah yang berbeda. Selain itu, jumlah produk yang dihasilkan dan penjualan perlu dicatat agar pemilik usaha dapat memantau persediaan serta aktivitas operasional dengan lebih mudah.
 Aplikasi ini dikembangkan untuk membantu mengintegrasikan pencatatan persediaan, produksi, dan penjualan dalam satu sistem. Supabase digunakan sebagai backend dan PostgreSQL sebagai basis data untuk mendukung penyimpanan serta pengelolaan data aplikasi.
 
 2. Tujuan Pengembangan
@@ -44,23 +41,17 @@ Pencatatan dilakukan dengan memperhatikan tiga kelompok utama berikut.
 | Persediaan Barang Jadi | Mencatat produk bakery yang telah selesai diproduksi dan tersedia untuk dijual. |
 | Penjualan | Mencatat transaksi penjualan produk sebagai bagian dari aktivitas pendapatan usaha. |
 
-Dalam kegiatan produksi, bahan baku digunakan untuk menghasilkan barang jadi. Selanjutnya, barang jadi yang tersedia dapat dijual kepada pelanggan.
-
-Secara sederhana, alur pencatatan persediaan dan produksi adalah:
-
-Persediaan Bahan Baku → Pemakaian Bahan Baku → Produksi → Persediaan Barang Jadi → Penjualan
-
-Pencatatan tersebut membantu pemilik usaha mengetahui pergerakan persediaan dan mengawasi aktivitas operasional bakery. Perhitungan harga pokok produksi dan laba memerlukan data biaya yang memadai, seperti biaya bahan baku, tenaga kerja langsung, dan overhead produksi.
+Dalam kegiatan produksi, bahan baku digunakan untuk menghasilkan barang jadi. Selanjutnya, barang jadi yang tersedia dapat dijual kepada pelanggan. Pencatatan tersebut membantu pemilik usaha mengetahui pergerakan persediaan dan mengawasi aktivitas operasional bakery. Perhitungan harga pokok produksi dan laba memerlukan data biaya yang memadai, seperti biaya bahan baku, tenaga kerja langsung, dan overhead produksi.
 
 5. Alur Sistem
 
-1. Pengguna membuka Dashboard untuk melihat ringkasan informasi operasional bakery.
-2. Pengguna mengelola data bahan baku melalui menu Bahan Baku.
-3. Pengguna mengelola produk bakery melalui menu Barang Jadi.
-4. Pengguna mencatat kegiatan produksi dan jumlah produk yang dihasilkan.
-5. Pengguna mencatat pemakaian bahan baku yang digunakan dalam proses produksi.
-6. Pengguna mencatat transaksi penjualan produk bakery.
-7. Data yang tersimpan digunakan untuk membantu pemantauan persediaan, produksi, dan penjualan.
+- Pengguna membuka Dashboard untuk melihat ringkasan informasi operasional bakery.
+- Pengguna mengelola data bahan baku melalui menu Bahan Baku.
+- Pengguna mengelola produk bakery melalui menu Barang Jadi.
+- Pengguna mencatat kegiatan produksi dan jumlah produk yang dihasilkan.
+- Pengguna mencatat pemakaian bahan baku yang digunakan dalam proses produksi.
+- Pengguna mencatat transaksi penjualan produk bakery.
+- Data yang tersimpan digunakan untuk membantu pemantauan persediaan, produksi, dan penjualan.
 
 6. Entity Relationship Diagram (ERD)
 
