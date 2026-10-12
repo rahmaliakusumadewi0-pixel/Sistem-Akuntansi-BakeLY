@@ -55,130 +55,135 @@ Dalam kegiatan produksi, bahan baku digunakan untuk menghasilkan barang jadi. Se
 
 6. Entity Relationship Diagram (ERD)
 
-Entity Relationship Diagram (ERD) menggambarkan struktur basis data dan hubungan antartabel yang digunakan dalam Sistem Akuntansi Toko BakeLY.
+Entity Relationship Diagram (ERD) menggambarkan struktur basis data dan hubungan antartabel dalam Sistem Akuntansi Toko BakeLY. Database menggunakan PostgreSQL melalui Supabase dan terdiri atas delapan tabel utama, yaitu `bahan_baku`, `produk`, `penjualan`, `detail_penjualan`, `produksi`, `pemakaian_bb`, `mutasi_stok`, dan `resep_produk`.
 
--- WARNING: This schema is for context only and is not meant to be run.
--- Table order and constraints may not be valid for execution.
+```mermaid
+erDiagram
+    BAHAN_BAKU {
+        uuid id PK
+        text nama
+        text satuan
+        numeric stok
+        numeric stok_minimum
+        numeric harga_satuan
+        timestamptz created_at
+    }
 
-CREATE TABLE public.bahan_baku (
-  id uuid NOT NULL DEFAULT gen_random_uuid(),
-  nama text NOT NULL,
-  satuan text NOT NULL DEFAULT 'kg'::text,
-  stok numeric NOT NULL DEFAULT 0 CHECK (stok >= 0::numeric),
-  stok_minimum numeric NOT NULL DEFAULT 0 CHECK (stok_minimum >= 0::numeric),
-  harga_satuan numeric NOT NULL DEFAULT 0 CHECK (harga_satuan >= 0::numeric),
-  created_at timestamp with time zone NOT NULL DEFAULT now(),
-  CONSTRAINT bahan_baku_pkey PRIMARY KEY (id)
-);
-CREATE TABLE public.produk (
-  id uuid NOT NULL DEFAULT gen_random_uuid(),
-  nama text NOT NULL,
-  kode_produk text NOT NULL DEFAULT ''::text,
-  harga_jual numeric NOT NULL DEFAULT 0 CHECK (harga_jual >= 0::numeric),
-  stok numeric NOT NULL DEFAULT 0 CHECK (stok >= 0::numeric),
-  satuan text NOT NULL DEFAULT 'pcs'::text,
-  aktif boolean NOT NULL DEFAULT true,
-  created_at timestamp with time zone NOT NULL DEFAULT now(),
-  hpp_per_unit numeric,
-  CONSTRAINT produk_pkey PRIMARY KEY (id)
-);
-CREATE TABLE public.penjualan (
-  id uuid NOT NULL DEFAULT gen_random_uuid(),
-  nomor_nota text NOT NULL UNIQUE,
-  tanggal timestamp with time zone NOT NULL DEFAULT now(),
-  pelanggan text NOT NULL DEFAULT 'Umum'::text,
-  total numeric NOT NULL DEFAULT 0 CHECK (total >= 0::numeric),
-  status text NOT NULL DEFAULT 'lunas'::text CHECK (status = ANY (ARRAY['lunas'::text, 'piutang'::text, 'batal'::text])),
-  created_at timestamp with time zone NOT NULL DEFAULT now(),
-  CONSTRAINT penjualan_pkey PRIMARY KEY (id)
-);
-CREATE TABLE public.detail_penjualan (
-  id uuid NOT NULL DEFAULT gen_random_uuid(),
-  penjualan_id uuid NOT NULL,
-  produk_id uuid NOT NULL,
-  jumlah numeric NOT NULL CHECK (jumlah > 0::numeric),
-  harga_satuan numeric NOT NULL CHECK (harga_satuan >= 0::numeric),
-  subtotal numeric DEFAULT (jumlah * harga_satuan),
-  hpp_satuan numeric CHECK (hpp_satuan IS NULL OR hpp_satuan >= 0::numeric),
-  CONSTRAINT detail_penjualan_pkey PRIMARY KEY (id),
-  CONSTRAINT detail_penjualan_penjualan_id_fkey FOREIGN KEY (penjualan_id) REFERENCES public.penjualan(id),
-  CONSTRAINT detail_penjualan_produk_id_fkey FOREIGN KEY (produk_id) REFERENCES public.produk(id)
-);
-CREATE TABLE public.produksi (
-  id uuid NOT NULL DEFAULT gen_random_uuid(),
-  nomor_produksi text NOT NULL UNIQUE,
-  produk_id uuid NOT NULL,
-  jumlah numeric NOT NULL CHECK (jumlah > 0::numeric),
-  tanggal timestamp with time zone NOT NULL DEFAULT now(),
-  catatan text,
-  created_at timestamp with time zone NOT NULL DEFAULT now(),
-  biaya_bahan_baku numeric,
-  biaya_tenaga_kerja numeric,
-  biaya_overhead numeric,
-  hpp_per_unit numeric,
-  CONSTRAINT produksi_pkey PRIMARY KEY (id),
-  CONSTRAINT produksi_produk_id_fkey FOREIGN KEY (produk_id) REFERENCES public.produk(id)
-);
-CREATE TABLE public.pemakaian_bb (
-  id uuid NOT NULL DEFAULT gen_random_uuid(),
-  produksi_id uuid NOT NULL,
-  bahan_baku_id uuid NOT NULL,
-  jumlah numeric NOT NULL CHECK (jumlah > 0::numeric),
-  created_at timestamp with time zone NOT NULL DEFAULT now(),
-  CONSTRAINT pemakaian_bb_pkey PRIMARY KEY (id),
-  CONSTRAINT pemakaian_bb_produksi_id_fkey FOREIGN KEY (produksi_id) REFERENCES public.produksi(id),
-  CONSTRAINT pemakaian_bb_bahan_baku_id_fkey FOREIGN KEY (bahan_baku_id) REFERENCES public.bahan_baku(id)
-);
-CREATE TABLE public.mutasi_stok (
-  id uuid NOT NULL DEFAULT gen_random_uuid(),
-  tipe text NOT NULL CHECK (tipe = ANY (ARRAY['produksi'::text, 'penjualan'::text, 'koreksi'::text, 'pemakaian_bb'::text, 'pembatalan'::text, 'pembelian'::text])),
-  bahan_baku_id uuid,
-  produk_id uuid,
-  jumlah numeric NOT NULL,
-  stok_sebelum numeric NOT NULL,
-  stok_sesudah numeric NOT NULL,
-  referensi_id uuid,
-  catatan text,
-  created_at timestamp with time zone NOT NULL DEFAULT now(),
-  CONSTRAINT mutasi_stok_pkey PRIMARY KEY (id),
-  CONSTRAINT mutasi_stok_bahan_baku_id_fkey FOREIGN KEY (bahan_baku_id) REFERENCES public.bahan_baku(id),
-  CONSTRAINT mutasi_stok_produk_id_fkey FOREIGN KEY (produk_id) REFERENCES public.produk(id)
-);
-CREATE TABLE public.resep_produk (
-  id uuid NOT NULL DEFAULT gen_random_uuid(),
-  produk_id uuid NOT NULL,
-  bahan_baku_id uuid NOT NULL,
-  jumlah_per_produk numeric NOT NULL CHECK (jumlah_per_produk > 0::numeric),
-  created_at timestamp with time zone NOT NULL DEFAULT now(),
-  CONSTRAINT resep_produk_pkey PRIMARY KEY (id),
-  CONSTRAINT resep_produk_produk_id_fkey FOREIGN KEY (produk_id) REFERENCES public.produk(id),
-  CONSTRAINT resep_produk_bahan_baku_id_fkey FOREIGN KEY (bahan_baku_id) REFERENCES public.bahan_baku(id)
-);
+    PRODUK {
+        uuid id PK
+        text nama
+        text kode_produk
+        numeric harga_jual
+        numeric stok
+        text satuan
+        boolean aktif
+        numeric hpp_per_unit
+        timestamptz created_at
+    }
 
-Struktur utama basis data dirancang untuk mendukung pengelolaan bahan baku, barang jadi, pemakaian bahan baku, produksi, dan penjualan.
+    PENJUALAN {
+        uuid id PK
+        text nomor_nota UK
+        timestamptz tanggal
+        text pelanggan
+        numeric total
+        text status
+        timestamptz created_at
+    }
 
-Deskripsi Tabel Database
+    DETAIL_PENJUALAN {
+        uuid id PK
+        uuid penjualan_id FK
+        uuid produk_id FK
+        numeric jumlah
+        numeric harga_satuan
+        numeric subtotal
+        numeric hpp_satuan
+    }
+
+    PRODUKSI {
+        uuid id PK
+        text nomor_produksi UK
+        uuid produk_id FK
+        numeric jumlah
+        timestamptz tanggal
+        text catatan
+        numeric biaya_bahan_baku
+        numeric biaya_tenaga_kerja
+        numeric biaya_overhead
+        numeric hpp_per_unit
+        timestamptz created_at
+    }
+
+    PEMAKAIAN_BB {
+        uuid id PK
+        uuid produksi_id FK
+        uuid bahan_baku_id FK
+        numeric jumlah
+        timestamptz created_at
+    }
+
+    RESEP_PRODUK {
+        uuid id PK
+        uuid produk_id FK
+        uuid bahan_baku_id FK
+        numeric jumlah_per_produk
+        timestamptz created_at
+    }
+
+    MUTASI_STOK {
+        uuid id PK
+        text tipe
+        uuid bahan_baku_id FK
+        uuid produk_id FK
+        numeric jumlah
+        numeric stok_sebelum
+        numeric stok_sesudah
+        uuid referensi_id
+        text catatan
+        timestamptz created_at
+    }
+
+    PENJUALAN ||--o{ DETAIL_PENJUALAN : memiliki
+    PRODUK ||--o{ DETAIL_PENJUALAN : dijual
+    PRODUK ||--o{ PRODUKSI : dihasilkan
+    PRODUKSI ||--o{ PEMAKAIAN_BB : menggunakan
+    BAHAN_BAKU ||--o{ PEMAKAIAN_BB : digunakan
+    PRODUK ||--o{ RESEP_PRODUK : memiliki
+    BAHAN_BAKU ||--o{ RESEP_PRODUK : menjadi_bahan
+    BAHAN_BAKU o|--o{ MUTASI_STOK : mengalami
+    PRODUK o|--o{ MUTASI_STOK : mengalami
+```
+
+### Deskripsi Tabel Database
 
 | Nama Tabel | Fungsi |
 |---|---|
-| `bahan_baku` | Menyimpan informasi bahan baku, seperti kode, nama, satuan, harga, dan stok. |
-| `barang_jadi` | Menyimpan data produk bakery yang dihasilkan dan informasi terkait produk. |
-| `pemakaian_bb` | Menyimpan pencatatan penggunaan bahan baku dalam kegiatan produksi. |
-| `produksi` | Menyimpan informasi kegiatan produksi dan jumlah produk yang dihasilkan. |
-| `penjualan` | Menyimpan informasi transaksi penjualan produk bakery. |
+| `bahan_baku` | Menyimpan data bahan baku, satuan, stok, batas stok minimum, dan harga satuan. |
+| `produk` | Menyimpan data produk bakery, kode produk, harga jual, stok, status aktif, dan HPP per unit. |
+| `penjualan` | Menyimpan informasi transaksi penjualan, nomor nota, tanggal, pelanggan, total, dan status transaksi. |
+| `detail_penjualan` | Menyimpan rincian produk yang terjual, jumlah, harga satuan, subtotal, dan HPP satuan. |
+| `produksi` | Mencatat kegiatan produksi, jumlah produk, tanggal, serta komponen biaya produksi. |
+| `pemakaian_bb` | Mencatat jumlah bahan baku yang digunakan dalam suatu kegiatan produksi. |
+| `resep_produk` | Menyimpan komposisi bahan baku dan jumlah bahan yang diperlukan untuk setiap produk. |
+| `mutasi_stok` | Mencatat perubahan persediaan bahan baku atau produk, termasuk jenis mutasi serta stok sebelum dan sesudah perubahan. |
 
-Relasi Antartabel
+### Relasi Antartabel
 
-Hubungan antartabel disusun untuk mendukung keterkaitan data persediaan, pemakaian bahan baku, produksi, dan penjualan.
+- `penjualan` terhubung dengan `detail_penjualan` melalui `penjualan_id`. Satu transaksi dapat memiliki beberapa rincian produk.
+- `produk` terhubung dengan `detail_penjualan` melalui `produk_id` untuk menunjukkan produk yang dijual.
+- `produk` terhubung dengan `produksi` melalui `produk_id` untuk mencatat kegiatan produksi setiap produk.
+- `produksi` terhubung dengan `pemakaian_bb` melalui `produksi_id` untuk mencatat bahan baku yang digunakan dalam produksi.
+- `bahan_baku` terhubung dengan `pemakaian_bb` melalui `bahan_baku_id` untuk mengidentifikasi bahan yang digunakan.
+- `produk` dan `bahan_baku` terhubung melalui `resep_produk` untuk menggambarkan komposisi bahan baku setiap produk.
+- `mutasi_stok` dapat mencatat perubahan stok bahan baku maupun produk melalui kolom `bahan_baku_id` dan `produk_id`.
+- Kolom `referensi_id` pada `mutasi_stok` menyimpan identitas referensi transaksi, tetapi tidak didefinisikan sebagai foreign key dalam skema yang diberikan.
 
-- `bahan_baku` digunakan sebagai sumber data bahan dalam pencatatan pemakaian bahan baku.
-- `pemakaian_bb` mendukung pencatatan bahan baku yang digunakan dalam proses produksi.
-- `produksi` mencatat aktivitas produksi dan hasil produk bakery.
-- `barang_jadi` menyimpan informasi produk yang dihasilkan dan dikelola untuk kebutuhan penjualan.
-- `penjualan` mencatat transaksi penjualan produk bakery.
-
-Relasi teknis, termasuk penggunaan primary key dan foreign key, mengikuti struktur tabel dan konfigurasi yang diterapkan pada basis data aplikasi.
-
+Keterangan:
+- `PK` (*Primary Key*) adalah kunci utama untuk mengidentifikasi setiap baris data.
+- `FK` (*Foreign Key*) adalah kunci yang menghubungkan suatu tabel dengan tabel lain.
+- `UK` (*Unique Key*) menunjukkan kolom dengan nilai yang tidak boleh duplikat.
+- Relasi pada diagram menunjukkan hubungan berdasarkan foreign key yang didefinisikan dalam skema database.
 7. Teknologi Pengembangan
 
 | Komponen | Teknologi | Fungsi |
