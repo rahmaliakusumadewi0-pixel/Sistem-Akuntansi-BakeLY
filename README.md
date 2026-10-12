@@ -4,12 +4,12 @@ Sistem Akuntansi Toko BakeLY
 
 Aplikasi berbasis web untuk membantu pengelolaan penjualan, persediaan bahan baku, produksi, dan pencatatan pemakaian bahan baku pada usaha bakery.
 
-1. Deskripsi Sistem
+### 1. Deskripsi Sistem
 
 Sistem Akuntansi Toko BakeLY merupakan aplikasi yang dirancang untuk mendukung pencatatan dan pengelolaan aktivitas operasional usaha bakery secara terstruktur. Sistem ini mencakup pengelolaan bahan baku, barang jadi, pemakaian bahan baku, produksi, dan penjualan. Dalam usaha bakery, kegiatan produksi membutuhkan bahan baku dengan jenis dan jumlah yang berbeda. Selain itu, jumlah produk yang dihasilkan dan penjualan perlu dicatat agar pemilik usaha dapat memantau persediaan serta aktivitas operasional dengan lebih mudah.
 Aplikasi ini dikembangkan untuk membantu mengintegrasikan pencatatan persediaan, produksi, dan penjualan dalam satu sistem. Supabase digunakan sebagai backend dan PostgreSQL sebagai basis data untuk mendukung penyimpanan serta pengelolaan data aplikasi.
 
-2. Tujuan Pengembangan
+### 2. Tujuan Pengembangan
 
 - Membantu pengelolaan data bahan baku dan persediaannya.
 - Mempermudah pencatatan hasil produksi bakery.
@@ -18,7 +18,7 @@ Aplikasi ini dikembangkan untuk membantu mengintegrasikan pencatatan persediaan,
 - Mempermudah pemantauan ketersediaan bahan baku dan barang jadi.
 - Menyediakan informasi operasional untuk mendukung pengambilan keputusan usaha.
 
-3. Fitur Utama
+### 3. Fitur Utama
 
 | Fitur | Deskripsi |
 |---|---|
@@ -29,7 +29,7 @@ Aplikasi ini dikembangkan untuk membantu mengintegrasikan pencatatan persediaan,
 | Pemakaian Bahan Baku | Mencatat bahan baku yang digunakan dalam proses produksi. |
 | Penjualan | Mencatat transaksi penjualan produk bakery dan informasi terkait transaksi. |
 
-4. Sistem Akuntansi pada Usaha Bakery
+### 4. Sistem Akuntansi pada Usaha Bakery
 
 Sistem Akuntansi Toko BakeLY menerapkan konsep pencatatan akuntansi pada aktivitas persediaan, produksi, dan penjualan usaha bakery.
 
@@ -43,7 +43,7 @@ Pencatatan dilakukan dengan memperhatikan tiga kelompok utama berikut.
 
 Dalam kegiatan produksi, bahan baku digunakan untuk menghasilkan barang jadi. Selanjutnya, barang jadi yang tersedia dapat dijual kepada pelanggan. Pencatatan tersebut membantu pemilik usaha mengetahui pergerakan persediaan dan mengawasi aktivitas operasional bakery. Perhitungan harga pokok produksi dan laba memerlukan data biaya yang memadai, seperti biaya bahan baku, tenaga kerja langsung, dan overhead produksi.
 
-5. Alur Sistem
+### 5. Alur Sistem
 
 - Pengguna membuka Dashboard untuk melihat ringkasan informasi operasional bakery.
 - Pengguna mengelola data bahan baku melalui menu Bahan Baku.
@@ -53,7 +53,7 @@ Dalam kegiatan produksi, bahan baku digunakan untuk menghasilkan barang jadi. Se
 - Pengguna mencatat transaksi penjualan produk bakery.
 - Data yang tersimpan digunakan untuk membantu pemantauan persediaan, produksi, dan penjualan.
 
-6. Entity Relationship Diagram (ERD)
+### 6. Entity Relationship Diagram (ERD)
 
 Entity Relationship Diagram (ERD) menggambarkan struktur basis data dan hubungan antartabel dalam Sistem Akuntansi Toko BakeLY. Database menggunakan PostgreSQL melalui Supabase dan terdiri atas delapan tabel utama, yaitu `bahan_baku`, `produk`, `penjualan`, `detail_penjualan`, `produksi`, `pemakaian_bb`, `mutasi_stok`, dan `resep_produk`.
 
@@ -184,7 +184,8 @@ Keterangan:
 - `FK` (*Foreign Key*) adalah kunci yang menghubungkan suatu tabel dengan tabel lain.
 - `UK` (*Unique Key*) menunjukkan kolom dengan nilai yang tidak boleh duplikat.
 - Relasi pada diagram menunjukkan hubungan berdasarkan foreign key yang didefinisikan dalam skema database.
-7. Teknologi Pengembangan
+
+### 7. Teknologi Pengembangan
 
 | Komponen | Teknologi | Fungsi |
 |---|---|---|
@@ -204,7 +205,7 @@ Keterangan:
 - Menyajikan ringkasan informasi operasional melalui Dashboard.
 - Mendukung pengawasan dan evaluasi kegiatan usaha bakery.
 
-9. Integrasi Basis Data
+### 9. Integrasi Basis Data
 
 Sistem Akuntansi Toko BakeLY menggunakan Supabase dengan PostgreSQL sebagai basis data untuk menyimpan dan mengelola informasi aplikasi.
 
@@ -212,7 +213,7 @@ Struktur utama basis data terdiri atas tabel `bahan_baku`, `barang_jadi`, `pemak
 
 Integrasi basis data memungkinkan aplikasi mengelola data sesuai dengan fungsi masing-masing menu. Data yang dimasukkan melalui aplikasi disimpan berdasarkan konfigurasi dan struktur basis data yang diterapkan.
 
-10. Penutup
+### 10. Penutup
 
 Sistem Akuntansi Toko BakeLY merupakan implementasi konsep akuntansi pada pengelolaan usaha bakery melalui aplikasi berbasis web. Dengan fitur Dashboard, Bahan Baku, Barang Jadi, Produksi, Pemakaian Bahan Baku, dan Penjualan, aplikasi ini dirancang untuk membantu pencatatan aktivitas operasional secara lebih terstruktur.
 
