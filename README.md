@@ -57,6 +57,104 @@ Dalam kegiatan produksi, bahan baku digunakan untuk menghasilkan barang jadi. Se
 
 Entity Relationship Diagram (ERD) menggambarkan struktur basis data dan hubungan antartabel yang digunakan dalam Sistem Akuntansi Toko BakeLY.
 
+-- WARNING: This schema is for context only and is not meant to be run.
+-- Table order and constraints may not be valid for execution.
+
+CREATE TABLE public.bahan_baku (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  nama text NOT NULL,
+  satuan text NOT NULL DEFAULT 'kg'::text,
+  stok numeric NOT NULL DEFAULT 0 CHECK (stok >= 0::numeric),
+  stok_minimum numeric NOT NULL DEFAULT 0 CHECK (stok_minimum >= 0::numeric),
+  harga_satuan numeric NOT NULL DEFAULT 0 CHECK (harga_satuan >= 0::numeric),
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT bahan_baku_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.produk (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  nama text NOT NULL,
+  kode_produk text NOT NULL DEFAULT ''::text,
+  harga_jual numeric NOT NULL DEFAULT 0 CHECK (harga_jual >= 0::numeric),
+  stok numeric NOT NULL DEFAULT 0 CHECK (stok >= 0::numeric),
+  satuan text NOT NULL DEFAULT 'pcs'::text,
+  aktif boolean NOT NULL DEFAULT true,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  hpp_per_unit numeric,
+  CONSTRAINT produk_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.penjualan (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  nomor_nota text NOT NULL UNIQUE,
+  tanggal timestamp with time zone NOT NULL DEFAULT now(),
+  pelanggan text NOT NULL DEFAULT 'Umum'::text,
+  total numeric NOT NULL DEFAULT 0 CHECK (total >= 0::numeric),
+  status text NOT NULL DEFAULT 'lunas'::text CHECK (status = ANY (ARRAY['lunas'::text, 'piutang'::text, 'batal'::text])),
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT penjualan_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.detail_penjualan (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  penjualan_id uuid NOT NULL,
+  produk_id uuid NOT NULL,
+  jumlah numeric NOT NULL CHECK (jumlah > 0::numeric),
+  harga_satuan numeric NOT NULL CHECK (harga_satuan >= 0::numeric),
+  subtotal numeric DEFAULT (jumlah * harga_satuan),
+  hpp_satuan numeric CHECK (hpp_satuan IS NULL OR hpp_satuan >= 0::numeric),
+  CONSTRAINT detail_penjualan_pkey PRIMARY KEY (id),
+  CONSTRAINT detail_penjualan_penjualan_id_fkey FOREIGN KEY (penjualan_id) REFERENCES public.penjualan(id),
+  CONSTRAINT detail_penjualan_produk_id_fkey FOREIGN KEY (produk_id) REFERENCES public.produk(id)
+);
+CREATE TABLE public.produksi (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  nomor_produksi text NOT NULL UNIQUE,
+  produk_id uuid NOT NULL,
+  jumlah numeric NOT NULL CHECK (jumlah > 0::numeric),
+  tanggal timestamp with time zone NOT NULL DEFAULT now(),
+  catatan text,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  biaya_bahan_baku numeric,
+  biaya_tenaga_kerja numeric,
+  biaya_overhead numeric,
+  hpp_per_unit numeric,
+  CONSTRAINT produksi_pkey PRIMARY KEY (id),
+  CONSTRAINT produksi_produk_id_fkey FOREIGN KEY (produk_id) REFERENCES public.produk(id)
+);
+CREATE TABLE public.pemakaian_bb (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  produksi_id uuid NOT NULL,
+  bahan_baku_id uuid NOT NULL,
+  jumlah numeric NOT NULL CHECK (jumlah > 0::numeric),
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT pemakaian_bb_pkey PRIMARY KEY (id),
+  CONSTRAINT pemakaian_bb_produksi_id_fkey FOREIGN KEY (produksi_id) REFERENCES public.produksi(id),
+  CONSTRAINT pemakaian_bb_bahan_baku_id_fkey FOREIGN KEY (bahan_baku_id) REFERENCES public.bahan_baku(id)
+);
+CREATE TABLE public.mutasi_stok (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  tipe text NOT NULL CHECK (tipe = ANY (ARRAY['produksi'::text, 'penjualan'::text, 'koreksi'::text, 'pemakaian_bb'::text, 'pembatalan'::text, 'pembelian'::text])),
+  bahan_baku_id uuid,
+  produk_id uuid,
+  jumlah numeric NOT NULL,
+  stok_sebelum numeric NOT NULL,
+  stok_sesudah numeric NOT NULL,
+  referensi_id uuid,
+  catatan text,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT mutasi_stok_pkey PRIMARY KEY (id),
+  CONSTRAINT mutasi_stok_bahan_baku_id_fkey FOREIGN KEY (bahan_baku_id) REFERENCES public.bahan_baku(id),
+  CONSTRAINT mutasi_stok_produk_id_fkey FOREIGN KEY (produk_id) REFERENCES public.produk(id)
+);
+CREATE TABLE public.resep_produk (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  produk_id uuid NOT NULL,
+  bahan_baku_id uuid NOT NULL,
+  jumlah_per_produk numeric NOT NULL CHECK (jumlah_per_produk > 0::numeric),
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT resep_produk_pkey PRIMARY KEY (id),
+  CONSTRAINT resep_produk_produk_id_fkey FOREIGN KEY (produk_id) REFERENCES public.produk(id),
+  CONSTRAINT resep_produk_bahan_baku_id_fkey FOREIGN KEY (bahan_baku_id) REFERENCES public.bahan_baku(id)
+);
+
 Struktur utama basis data dirancang untuk mendukung pengelolaan bahan baku, barang jadi, pemakaian bahan baku, produksi, dan penjualan.
 
 Deskripsi Tabel Database
